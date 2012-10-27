@@ -1,0 +1,34 @@
+{
+	"BundleType": "Application",
+	"BundleIdentifier": "horsify",
+	"BundleVersion": "0.1b",
+	"AcceptedLinkTypes":[
+		"playlist"
+	],
+	"AppIcon": {
+		"18x18": "horsify_icon.png"
+	},
+	"AppName": {
+		"en": "Horsify"
+	},
+	"AppDescription": {
+		"en": "Horsify, get your route around Iceland on a horse, miss stuff if you like speed metal"
+	},
+	"SupportedLanguages": [
+		"en"
+	],
+	"DefaultTabs": [
+		{
+			"arguments": "player",
+			"title": {
+				"en": "Player"
+			}
+		}
+	],
+	"RequiredPermissions": [
+		"https://*",
+		"http://*"
+	],
+	"RequiredInterface": "1",
+	"VendorIdentifier": "com.horsify"
+}
