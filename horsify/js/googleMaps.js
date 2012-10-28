@@ -1,10 +1,10 @@
 
 var map_object;
-var image = 'img/chevaux-43_r.gif';
+var image = null;
 var horseMarker;
 var OFFSET = 2;
-
-var ctaLayer1 = new google.maps.KmlLayer('https://maps.google.com/maps/ms?ie=UTF8&oe=UTF8&authuser=0&msa=0&output=kml&msid=209542625718007051021.0004a0def5a2439e0d0f9');
+//city  https://maps.google.com/maps/ms?authuser=0&vps=2&ie=UTF8&msa=0&output=kml&msid=217451513966778790628.0004cd1dc01168ef92700
+//golden https://maps.google.com/maps/ms?ie=UTF8&oe=UTF8&authuser=0&msa=0&output=kml&msid=209542625718007051021.0004a0def5a2439e0d0f9
 //var ctaLayer2 = new google.maps.KmlLayer('https://maps.google.com/maps/ms?authuser=0&vps=9&ie=UTF8&msa=0&output=kml&msid=217451513966778790628.0004cd17a5deee8d62165');
 	
 	
@@ -19,7 +19,7 @@ function initialize() {
 		center: iceland,
 		panControl: false,
 		minZoom: 1,
-		maxZoom: 9,
+		maxZoom: 20,
 		draggable: true, zoomControl: true, scrollwheel: false,
 		scaleControl: false,
 		zoom: 5,
@@ -29,8 +29,21 @@ function initialize() {
 		disableDefaultUI: true
 	};
 	
+		
 	map_object = new google.maps.Map(document.getElementById("map"), opts);
-	setMarker(map_object, routes[0][1], 0, 1);
+	
+	if( !currGenre )
+		return;
+	
+	if( currGenre && currGenre == "hip hop"){
+		var ctaLayer1 = new google.maps.KmlLayer('https://maps.google.com/maps/ms?ie=UTF8&authuser=0&msa=0&output=kml&msid=217451513966778790628.0004cd1dc01168ef92700');
+		map_object.setZoom(20);
+		setMarker(map_object, routes[1][1], 1, 1);
+	}else{
+		var ctaLayer1 = new google.maps.KmlLayer('https://maps.google.com/maps/ms?ie=UTF8&oe=UTF8&authuser=0&msa=0&output=kml&msid=209542625718007051021.0004a0def5a2439e0d0f9');
+		setMarker(map_object, routes[0][1], 0, 1);
+	}
+	
 	ctaLayer1.setMap(map_object); 
 	
 }
@@ -46,7 +59,7 @@ function getHorse()
 			case "electronic" : image += horses[2][0]; OFFSET = 30; break;
 			case "punk" : image += horses[4][0]; OFFSET = 90; break;
 			case "wierd": image += horses[4][1]; OFFSET = 100; break;
-			case "hip hop" : image += horses[5][0]; OFFSET = 24; break;
+			case "hip hop" : image += horses[5][0]; OFFSET = 8; break;
 			default: image += horses[1][0]; OFFSET = 40; break;
 		}
 		if( INTERVAL == 1000 )
@@ -54,11 +67,12 @@ function getHorse()
 			
 		return image;
 	}else
-		return 'img/chevaux-43_';
+		return null;
 
 }
 function setAndClearMarkers()
 {
+	
 	//console.log("SetMarkers");
 	horseMarker.setMap(null);
 	horseMarker = null;
@@ -70,11 +84,12 @@ function setAndClearMarkers()
 		image = getHorse() + 'r.gif';	
 	}
 	
+	
 	setMarker(map_object, routes[currentRoute][currentIndex], currentRoute, currentIndex);
  }
 function setMarker(map, location, currRoute, currIndex ) {
   
-  
+ 
   currentRoute = currRoute;
   currentIndex = (currIndex+OFFSET);
   

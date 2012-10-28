@@ -42,6 +42,8 @@ function fetchAudioSummary(track) {
 				INTERVAL = Math.round( INTERVAL );
 			}else
 				INTERVAL = 1000;
+			
+			initialize();		
 		} else {
 			return;
 		}
@@ -106,8 +108,6 @@ $(function() {
 			fetchAudioSummary(track);
 			doFetchTracks(track);
 			
-			
-			initialize();	
 
 		}
 	});
