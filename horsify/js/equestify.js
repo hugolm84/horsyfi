@@ -7,8 +7,7 @@ var sp = getSpotifyApi(1),
 	player = models.player,
 	library = models.library,
 	application = models.application,
-	playerImage = new views.Player(),
-	echoNest = nest.nest("K4CQ8QOWBZBA4HBYG");
+	playerImage = new views.Player();
 	
 // Handle URI arguments
 application.observe(models.EVENT.ARGUMENTSCHANGED, handleArgs);
@@ -80,8 +79,6 @@ $(function(){
 	// Run on application load
 	handleArgs();
 	handleLinks();
-	
-        	loadPlaylistUri("spotify:user:hugolindstrom:playlist:2PfyUNIAYwl4kTK2FxFxbX");
 	
 	
 });

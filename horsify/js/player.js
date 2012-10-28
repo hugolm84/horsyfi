@@ -8,7 +8,6 @@ var INTERVAL = 1000;
 
 var listenDuration = 0;
 var currGenre = null;
-var currTempo = null;
 var tickInterval;
 
 
@@ -36,18 +35,11 @@ function fetchAudioSummary(track) {
 		if (checkResponse(data)) {
 			console.log("Fetched summary!");
 			if(data.response.songs[0] != undefined){
-				currTempo = data.response.songs[0].audio_summary.tempo;
+				var currTempo = data.response.songs[0].audio_summary.tempo;
 				console.log(currTempo);	
 				INTERVAL = currTempo*10;
 				INTERVAL += data.response.songs[0].audio_summary.energy*100;
 				INTERVAL = Math.round( INTERVAL );
-				//INTERVAL *= data.response.songs[0].audio_summary.danceability;	
-				//console.log(data.response.songs[0].audio_summary);
-				/*if( tickInterval != null )
-					clearTimeout(tickInterval)
-				trackInterval = setInterval(function() {
-					tick(player)
-				}, INTERVAL);*/
 			}else
 				INTERVAL = 1000;
 		} else {
@@ -66,8 +58,9 @@ function fetchGenre(artist) {
 			if( data.response.terms[0] != undefined ){
 				console.log("Fetched: " + data.response.terms[0].name);
 				currGenre = data.response.terms[0].name;
-				if( currGenre == "hip hop")
-					INTERVAL = 10;
+				//if( currGenre == "hip hop")
+				//	INTERVAL = 10;
+					
 			}else currGenre = "wierd";			
 			nowPlaying();
 		} else {
@@ -81,7 +74,7 @@ function fetchGenre(artist) {
 function checkResponse(data) {
 	if (data.response) {
 		if (data.response.status.code != 0) {
-			error("Whoops... Unexpected error from server. " + data.response.status.message);
+			console.log("Whoops... Unexpected error from server. " + data.response.status.message);
 		} else {
 			return true;
 		}
@@ -92,15 +85,14 @@ function checkResponse(data) {
 }
 $(function() {
 	var previousTrack = null;
+	startTick();
 	// Update the page when the app loads
 	if (player.playing){ 
 		
 		fetchAudioSummary(player.track);
 		fetchGenre(player.track.album.artist);
-		startTick();
-		
-	}
-	else nowPlaying();
+	
+	}else nowPlaying();
 	// If we dont have a playlist yet, make sure they drop one 
 	if (typeof thisPlaylist === 'undefined') {
 		$('#player-content').hide();
@@ -109,25 +101,20 @@ $(function() {
 	player.observe(models.EVENT.CHANGE, function(event) {
 		if (event.data.curtrack == true) {
 			var track = player.track;
-			console.log(track.name + ' by ' + track.album.artist.name);
+			//console.log(track.name + ' by ' + track.album.artist.name);
 			console.log("Track changed!");
 			fetchAudioSummary(track);
 			doFetchTracks(track);
 			
 			
-			initialize();
-				
-			//clearInterval(tickInterval);
-			/*	tickInterval = setInterval(function() {
-				tick(player)
-			}, INTERVAL);*/
+			initialize();	
 
 		}
 	});
 
 	function doFetchTracks(track) {
-		console.log(listenDuration + " " + MIN_DURATION);
-		console.log("fetching based on" + track.name + ' by ' + track.album.artist.name);
+		//console.log(listenDuration + " " + MIN_DURATION);
+		//console.log("fetching based on" + track.name + ' by ' + track.album.artist.name);
 		timerSeconds = track.duration / 1000;
 		fetchGenre(track.album.artist);
 		listenDuration = 0;
@@ -142,7 +129,7 @@ function tick(player) {
 	if (player && player.playing) {
 		//console.log((player.track.duration - player.position) + " listenDuration: " + listenDuration);
 		listenDuration += INTERVAL;
-		console.log("INTERVAL: " + INTERVAL );
+		//console.log("INTERVAL: " + INTERVAL );
 		setAndClearMarkers();
 		//if (listenDuration > player.track.duration - INTERVAL) clearTimeout(tickInterval);
 	}//else clearTimeout(tickInterval);
@@ -170,8 +157,8 @@ function nowPlaying() {
 			img = new ui.SPImage("img/album/pop.jpeg");
 		else if( currGenre && currGenre == "electronic")
 			img = new ui.SPImage("img/album/electronic.jpeg");
-		else if( currGenre && currGenre == "punk")
-			img = new ui.SPImage("img/album/punk.jpeg");
+		//else if( currGenre && currGenre == "punk")
+		//	img = new ui.SPImage("img/album/punk.jpeg");
 		else if( currGenre && currGenre == "wierd")
 			img = new ui.SPImage("img/album/wierd.jpeg");
 		else
@@ -184,12 +171,13 @@ function nowPlaying() {
 		var song = '<a href="' + track.uri + '">' + track.name + '</a>';
 		var album = '<a href="' + track.album.uri + '">' + track.album.name + '</a>';
 		var artist = '<a href="' + track.album.artist.uri + '">' + track.album.artist.name + '</a>';
-		var context = player.context,
-			extra = "";
-		if (context) {
-			contextName = null;
-			extra = ' from <a href="' + context + '">here</a>';
-		} // too lazy to fetch the actual context name
-		$("#now-playing").append(song + " by " + artist + " off " + album + extra + " : " + currGenre);
+		var context = player.context;
+		if( currGenre && currGenre != "punk" )
+			$("#now-playing").append("<a>OOh niiice! a " + currGenre + " horse!</a>");
+		else
+			$("#now-playing").append("<a>Doh! This is a flying big, not a horse!</a>");
+		var random = Math.floor(Math.random() * (facts.length - 0 + 1)) + 0;
+		$("#now-playing").append("<br>" + facts[random] + "<br>" + song + " by " + artist + " (" + currGenre +")");
+
 	}
 }

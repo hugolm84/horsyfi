@@ -2,15 +2,15 @@
 var map_object;
 var image = 'img/chevaux-43_r.gif';
 var horseMarker;
-var OFFSET = 10;
+var OFFSET = 2;
 
 var ctaLayer1 = new google.maps.KmlLayer('https://maps.google.com/maps/ms?ie=UTF8&oe=UTF8&authuser=0&msa=0&output=kml&msid=209542625718007051021.0004a0def5a2439e0d0f9');
 //var ctaLayer2 = new google.maps.KmlLayer('https://maps.google.com/maps/ms?authuser=0&vps=9&ie=UTF8&msa=0&output=kml&msid=217451513966778790628.0004cd17a5deee8d62165');
 	
 	
 function initialize() {
+
 	var iceland = new google.maps.LatLng(64.140867, -21.871822)
-	
 	if (iceland) 
 		console.log("got maps");
 	else 
@@ -20,7 +20,7 @@ function initialize() {
 		panControl: false,
 		minZoom: 1,
 		maxZoom: 9,
-		draggable: false, zoomControl: true, scrollwheel: false,
+		draggable: true, zoomControl: true, scrollwheel: false,
 		scaleControl: false,
 		zoom: 5,
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -30,17 +30,9 @@ function initialize() {
 	};
 	
 	map_object = new google.maps.Map(document.getElementById("map"), opts);
-	
-	 
 	setMarker(map_object, routes[0][1], 0, 1);
 	ctaLayer1.setMap(map_object); 
-	/*if( currGenre && currGenre == "pop" ){
-	 setMarker(map_object, routes[1][1], 1, 1);
-	 ctaLayer1.setMap(map_object);
-	}else{
-	 setMarker(map_object, routes[0][1], 0, 1);
-	 ctaLayer2.setMap(map_object);
-	}*/
+	
 }
 
 function getHorse()
@@ -67,7 +59,7 @@ function getHorse()
 }
 function setAndClearMarkers()
 {
-	console.log("SetMarkers");
+	//console.log("SetMarkers");
 	horseMarker.setMap(null);
 	horseMarker = null;
 	if( currentIndex+OFFSET > routes[currentRoute].length)
@@ -96,15 +88,15 @@ function setMarker(map, location, currRoute, currIndex ) {
   });
  
 	if( routes[currentRoute][currentIndex][0] < routes[currentRoute][currentIndex-OFFSET][0] ){
-		console.log("hm going back?");
+		//console.log("hm going back?");
 		currAttr = 0;
 	}else{
 		
   	 if( location[0] > routesAttraction[currRoute][currAttr][1] ){
   		
   		console.log("Passed? " + location[0] + " <> "  + routesAttraction[currRoute][currAttr][1]);	
-	  	console.log("OFFSET:" + OFFSET);
-  		if( OFFSET <= 40 ){
+	  	
+	  	if( OFFSET <= 40 ){
   			if( currGenre == "hip hop" )
   				$("#mapSnippet").html("<h1>Im just to gangsta to care!!</h1>");
   			else		
