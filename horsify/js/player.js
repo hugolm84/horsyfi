@@ -4,24 +4,71 @@ jQuery.ajaxSettings.traditional = true;
 // why? If you change track, you may do so cuz you dont like it. But if you'v been
 // listening to it for a while, i guess you do like it.
 var MIN_DURATION = 20000;
-var INTERVAL = 10000;
+var INTERVAL = 1000;
 
 var listenDuration = 0;
 var currGenre = null;
-
-var tickInterval = setInterval(function() {
-	tick(player)
-}, INTERVAL);
+var currTempo = null;
+var tickInterval;
 
 
+function clearTick()
+{
+	clearInterval(tickInterval);
+	tickInterval = null;
+}
+
+function startTick()
+{
+	 if( tickInterval )
+	 	clearTick();
+	tickInterval = setInterval(function() {
+				tick(player)
+			}, INTERVAL);
+}
+function fetchAudioSummary(track) {
+	var url = "http://developer.echonest.com/api/v4/song/search?api_key=K4CQ8QOWBZBA4HBYG&format=jsonp&callback=?&results=1";
+	$.getJSON(url, {
+		'artist': track.album.artist.name,
+		'title' : track.name,
+		'bucket': "audio_summary"
+	}, function(data) {
+		if (checkResponse(data)) {
+			console.log("Fetched summary!");
+			if(data.response.songs[0] != undefined){
+				currTempo = data.response.songs[0].audio_summary.tempo;
+				console.log(currTempo);	
+				INTERVAL = currTempo*10;
+				INTERVAL += data.response.songs[0].audio_summary.energy*100;
+				INTERVAL = Math.round( INTERVAL );
+				//INTERVAL *= data.response.songs[0].audio_summary.danceability;	
+				//console.log(data.response.songs[0].audio_summary);
+				/*if( tickInterval != null )
+					clearTimeout(tickInterval)
+				trackInterval = setInterval(function() {
+					tick(player)
+				}, INTERVAL);*/
+			}else
+				INTERVAL = 1000;
+		} else {
+			return;
+		}
+	});
+}
+ 
+ 
 function fetchGenre(artist) {
 	var url = 'http://developer.echonest.com/api/v4/artist/terms?api_key=K4CQ8QOWBZBA4HBYG&format=jsonp&callback=?';
 	$.getJSON(url, {
 		'name': artist.name
 	}, function(data) {
 		if (checkResponse(data)) {
-			console.log("Fetched: " + data.response.terms[0].name);
-			currGenre = data.response.terms[0].name;			
+			if( data.response.terms[0] != undefined ){
+				console.log("Fetched: " + data.response.terms[0].name);
+				currGenre = data.response.terms[0].name;
+				if( currGenre == "hip hop")
+					INTERVAL = 10;
+			}else currGenre = "wierd";			
 			nowPlaying();
 		} else {
 			return;
@@ -46,7 +93,13 @@ function checkResponse(data) {
 $(function() {
 	var previousTrack = null;
 	// Update the page when the app loads
-	if (player.playing) currGenre = fetchGenre(player.track.album.artist);
+	if (player.playing){ 
+		
+		fetchAudioSummary(player.track);
+		fetchGenre(player.track.album.artist);
+		startTick();
+		
+	}
 	else nowPlaying();
 	// If we dont have a playlist yet, make sure they drop one 
 	if (typeof thisPlaylist === 'undefined') {
@@ -58,7 +111,17 @@ $(function() {
 			var track = player.track;
 			console.log(track.name + ' by ' + track.album.artist.name);
 			console.log("Track changed!");
+			fetchAudioSummary(track);
 			doFetchTracks(track);
+			
+			
+			initialize();
+				
+			//clearInterval(tickInterval);
+			/*	tickInterval = setInterval(function() {
+				tick(player)
+			}, INTERVAL);*/
+
 		}
 	});
 
@@ -68,9 +131,7 @@ $(function() {
 		timerSeconds = track.duration / 1000;
 		fetchGenre(track.album.artist);
 		listenDuration = 0;
-		tickInterval = setInterval(function() {
-			tick(player)
-		}, INTERVAL);
+		
 		nowPlaying();
 	}
 });
@@ -79,16 +140,20 @@ $(function() {
 function tick(player) {
 	console.log("tick");
 	if (player && player.playing) {
-		console.log((player.track.duration - player.position) + " listenDuration: " + listenDuration);
+		//console.log((player.track.duration - player.position) + " listenDuration: " + listenDuration);
 		listenDuration += INTERVAL;
-		if (listenDuration > player.track.duration - INTERVAL) clearTimeout(tickInterval);
-	}
+		console.log("INTERVAL: " + INTERVAL );
+		setAndClearMarkers();
+		//if (listenDuration > player.track.duration - INTERVAL) clearTimeout(tickInterval);
+	}//else clearTimeout(tickInterval);
+	
 };
 
 function nowPlaying() {
 	// This will be null if nothing is playing.
 	var track = player.track;
 	if (track == null) {
+		//$("now-playing").clear;
 		$("#now-playing").html("Painful silence!");
 	} else {
 		
@@ -97,7 +162,21 @@ function nowPlaying() {
 		var button = $(document.createElement('button')).attr('class', 'sp-player-button');
 		var cover = $(document.createElement('div')).attr('class', 'sp-player-image').attr('id', 'player-image');
 		cover.append($(document.createElement('a')).attr('href', track.data.album.uri));
-		var img = new ui.SPImage(track.data.album.cover ? track.data.album.cover : "sp://import/img/placeholders/300-album.png");
+		
+		var img; 
+		if( currGenre && currGenre == "hip hop")
+			img = new ui.SPImage("img/album/gangsta.png");
+		else if( currGenre && currGenre == "pop")
+			img = new ui.SPImage("img/album/pop.jpeg");
+		else if( currGenre && currGenre == "electronic")
+			img = new ui.SPImage("img/album/electronic.jpeg");
+		else if( currGenre && currGenre == "punk")
+			img = new ui.SPImage("img/album/punk.jpeg");
+		else if( currGenre && currGenre == "wierd")
+			img = new ui.SPImage("img/album/wierd.jpeg");
+		else
+			img = new ui.SPImage("img/album/flying_pig.jpeg");
+			
 		cover.children().append(img.node);
 		$(playerDiv).append(cover);
 		$(playerDiv).append(button);

@@ -51,7 +51,7 @@ function loadPlaylistUri(uri)
 			playlistList.node.id = "currPlaylist";
 			$("#playlistDiv").append(playlistList.node);
 			
-		initialize();	
+			initialize();			
 	} 
 	else
 		console.log("Fail to append " + uri );
@@ -66,6 +66,7 @@ function handleLinks() {
 				if( links[0].split(":")[3] == "playlist" )
 				{
 				 	loadPlaylistUri(links[0]);
+				 	
 				}		
 			default:
 				break;
@@ -79,6 +80,9 @@ $(function(){
 	// Run on application load
 	handleArgs();
 	handleLinks();
+	
+        	loadPlaylistUri("spotify:user:hugolindstrom:playlist:2PfyUNIAYwl4kTK2FxFxbX");
+	
 	
 });
 
