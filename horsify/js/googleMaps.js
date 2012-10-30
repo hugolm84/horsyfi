@@ -1,22 +1,26 @@
-
-var map_object;
+var map_object = null;
 var image = null;
-var horseMarker;
+var horseMarker = null;
 var OFFSET = 2;
-//city  https://maps.google.com/maps/ms?authuser=0&vps=2&ie=UTF8&msa=0&output=kml&msid=217451513966778790628.0004cd1dc01168ef92700
-//golden https://maps.google.com/maps/ms?ie=UTF8&oe=UTF8&authuser=0&msa=0&output=kml&msid=209542625718007051021.0004a0def5a2439e0d0f9
-//var ctaLayer2 = new google.maps.KmlLayer('https://maps.google.com/maps/ms?authuser=0&vps=9&ie=UTF8&msa=0&output=kml&msid=217451513966778790628.0004cd17a5deee8d62165');
-	
+
+var randomType = 0;
+var randomHorse = 0;
+var ICELAND = new google.maps.LatLng(64.140867, -21.871822)
+var INNERCITY = 'https://maps.google.com/maps/ms?ie=UTF8&authuser=0&msa=0&output=kml&msid=217451513966778790628.0004cd1dc01168ef92700';
+var GOLDENCIRCLE = 'https://maps.google.com/maps/ms?ie=UTF8&oe=UTF8&authuser=0&msa=0&output=kml&msid=209542625718007051021.0004a0def5a2439e0d0f9';					
 	
 function initialize() {
 
-	var iceland = new google.maps.LatLng(64.140867, -21.871822)
-	if (iceland) 
+	if (ICELAND) 
 		console.log("got maps");
 	else 
 		return;		
+	
+	if( !currGenre )
+		return;	
+		
 	var opts = {
-		center: iceland,
+		center: ICELAND,
 		panControl: false,
 		minZoom: 1,
 		maxZoom: 20,
@@ -32,43 +36,55 @@ function initialize() {
 		
 	map_object = new google.maps.Map(document.getElementById("map"), opts);
 	
-	if( !currGenre )
-		return;
+
 	
-	if( currGenre && currGenre == "hip hop"){
-		var ctaLayer1 = new google.maps.KmlLayer('https://maps.google.com/maps/ms?ie=UTF8&authuser=0&msa=0&output=kml&msid=217451513966778790628.0004cd1dc01168ef92700');
+	randomType = Math.floor(Math.random() * (horses.length));
+	randomHorse = Math.floor(Math.random() * (horses[randomType].length));
+
+	if( (currGenre && currGenre == "hip hop") ||  ( currGenre && currGenre == "rap" )){
+		var ctaLayer1 = new google.maps.KmlLayer(INNERCITY);
 		map_object.setZoom(20);
 		setMarker(map_object, routes[1][1], 1, 1);
 	}else{
-		var ctaLayer1 = new google.maps.KmlLayer('https://maps.google.com/maps/ms?ie=UTF8&oe=UTF8&authuser=0&msa=0&output=kml&msid=209542625718007051021.0004a0def5a2439e0d0f9');
+		var ctaLayer1 = new google.maps.KmlLayer(GOLDENCIRCLE);
 		setMarker(map_object, routes[0][1], 0, 1);
 	}
 	
 	ctaLayer1.setMap(map_object); 
-	
+		
 }
 
 function getHorse()
 {
+	
 	if( currGenre )
 	{	
 		var image = 'img/selection/';
 		switch( currGenre )
 		{
 			case "pop" : image += horses[6][0]; OFFSET = 18; break;
-			case "electronic" : image += horses[2][0]; OFFSET = 30; break;
-			case "punk" : image += horses[4][0]; OFFSET = 90; break;
+			case "electronic" : image += horses[2][Math.floor(Math.random() * (horses[2].length))]; OFFSET = 30; break;
+			case "punk" : image += horses[4][Math.floor(Math.random() * (horses[2].length))]; OFFSET = 90; break;
 			case "wierd": image += horses[4][1]; OFFSET = 100; break;
+			case "rap" :
 			case "hip hop" : image += horses[5][0]; OFFSET = 8; break;
-			default: image += horses[1][0]; OFFSET = 40; break;
+			default:
+				if( randomType == 5 ) // Never the gangsta horse
+					randomType = 3;
+				image += horses[randomType][randomHorse]; 
+				OFFSET = 40; 
+				break;
 		}
 		if( INTERVAL == 1000 )
 			OFFSET += 15;
-			
 		return image;
 	}else
 		return null;
 
+}
+
+function endsWith(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
 }
 function setAndClearMarkers()
 {
@@ -79,11 +95,12 @@ function setAndClearMarkers()
 	if( currentIndex+OFFSET > routes[currentRoute].length)
 		currentIndex = 0+OFFSET;
 	if( routes[currentRoute][currentIndex][0] > routes[currentRoute][currentIndex+OFFSET][0] ){
-		image = getHorse() + 'l.gif';
-	}else{ 
-		image = getHorse() + 'r.gif';	
+		if( !image || !endsWith(image, 'l.gif' ) )
+			image = getHorse() + 'l.gif';
+	}else{
+		if( image || !endsWith(image, 'r.gif' ) )
+			image = getHorse() + 'r.gif';	
 	}
-	
 	
 	setMarker(map_object, routes[currentRoute][currentIndex], currentRoute, currentIndex);
  }
@@ -112,7 +129,7 @@ function setMarker(map, location, currRoute, currIndex ) {
   		console.log("Passed? " + location[0] + " <> "  + routesAttraction[currRoute][currAttr][1]);	
 	  	
 	  	if( OFFSET <= 40 ){
-  			if( currGenre == "hip hop" )
+  			if( currGenre == "hip hop" || currGenre == "rap" )
   				$("#mapSnippet").html("<h1>Im just to gangsta to care!!</h1>");
   			else		
 	  			$("#mapSnippet").html("<h1>Aaah Iceland Iceland</h1>");

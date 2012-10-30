@@ -2,7 +2,7 @@
 var sp = getSpotifyApi(1),
 	models = sp.require("sp://import/scripts/api/models"),
 	views = sp.require("sp://import/scripts/api/views"),
-	ui = sp.require("sp://import/scripts/ui");
+	ui = sp.require("sp://import/scripts/ui"),
 	dnd =  sp.require('sp://import/scripts/dnd'),
 	player = models.player,
 	library = models.library,

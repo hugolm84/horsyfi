@@ -1,50 +1,44 @@
-
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>Equestify</title>
-		<link rel="stylesheet" href="sp://import/css/adam.css">
-	    <link rel="stylesheet" href="sp://import/css/api.css">
-		<link rel="stylesheet" href="css/kitchensink.css">
-		<link rel="stylesheet" href="css/main.css">
-	    
-	    <script type="text/javascript" src="js/routes.js"></script>
-	    <script type="text/javascript" src="js/horses.js"></script>
-	    <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-	    <script>
-	    	var currAttr = 0;
-	    </script>
-        <script type="text/javascript" src="js/googleMaps.js"></script>
-	</head>
-	
-    <body>
-	    
-		<div id="player" class="section">
-			<div id="playlist-drop" onDrop="dropPlaylist(event);" ondragover="event.preventDefault();">
-				<img src="img/main-horse.jpeg" /><br>
-				Drag and drop your playlist here!
-			</div>
+<head>
+    <meta charset="utf-8">
+    <title>Horsify</title>
+    <link rel="stylesheet" href="sp://import/css/adam.css" type="text/css">
+    <link rel="stylesheet" href="sp://import/css/api.css" type="text/css">
+    <link rel="stylesheet" href="css//kitchensink.css" type="text/css">
+    <link rel="stylesheet" href="css/main.css" type="text/css">
+    <script type="text/javascript" src="js/routes.js"></script>
+    <script type="text/javascript" src="js/horses.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>
+    <script type="text/javascript">
+        var currAttr = 0;
+    </script>
+    <script type="text/javascript" src="js/googleMaps.js">
+</script>
+</head>
 
-			<div id="player-content">
-				<div id="now-playing"></div>
-				
-				<div id="note">
-					<div id="mapSnippet"></div>
-				</div>
-				<div id="map"></div>
-				<div id="playlistDiv"></div>		
-			</div>
-		</div>
-		
-	    <script type="text/javascript" src="js/jquery.min.js"></script>
-	    <script type="text/javascript" src="js/nest.js"></script>
-	    <script type="text/javascript" src="js/equestify.js"></script>
-	    <script type="text/javascript" src="js/player.js"></script>
-	    
-	    
-        <script>
-        	google.maps.event.addDomListener(window, 'load', initialize);
-        </script>
-	</body>
+<body>
+    <div id="player" class="section">
+        <div id="playlist-drop" ondrop="dropPlaylist(event);" ondragover="event.preventDefault();">
+            <img src="img/main-horse.jpeg"><br>
+            Drag and drop your playlist here!
+        </div>
+
+        <div id="player-content">
+            <div id="now-playing"></div>
+            <div id="note">
+                <div id="mapSnippet"></div>
+            </div>
+            <div id="map"></div>
+            <div id="playlistDiv"></div>
+        </div>
+    </div>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/nest.js"></script>
+    <script type="text/javascript" src="js/equestify.js"></script>
+    <script type="text/javascript" src="js/player.js"></script>
+    <script type="text/javascript">
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+</body>
 </html>

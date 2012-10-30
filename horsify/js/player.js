@@ -140,7 +140,7 @@ function nowPlaying() {
 	// This will be null if nothing is playing.
 	var track = player.track;
 	if (track == null) {
-		//$("now-playing").clear;
+		$("now-playing").clear;
 		$("#now-playing").html("Painful silence!");
 	} else {
 		
@@ -151,14 +151,14 @@ function nowPlaying() {
 		cover.append($(document.createElement('a')).attr('href', track.data.album.uri));
 		
 		var img; 
-		if( currGenre && currGenre == "hip hop")
+		if( (currGenre && currGenre == "hip hop" ) || (currGenre && currGenre == "rap" ) )
 			img = new ui.SPImage("img/album/gangsta.png");
 		else if( currGenre && currGenre == "pop")
 			img = new ui.SPImage("img/album/pop.jpeg");
 		else if( currGenre && currGenre == "electronic")
 			img = new ui.SPImage("img/album/electronic.jpeg");
-		//else if( currGenre && currGenre == "punk")
-		//	img = new ui.SPImage("img/album/punk.jpeg");
+		else if( currGenre && currGenre == "punk")
+			img = new ui.SPImage("img/album/punk.jpeg");
 		else if( currGenre && currGenre == "wierd")
 			img = new ui.SPImage("img/album/wierd.jpeg");
 		else
@@ -172,12 +172,12 @@ function nowPlaying() {
 		var album = '<a href="' + track.album.uri + '">' + track.album.name + '</a>';
 		var artist = '<a href="' + track.album.artist.uri + '">' + track.album.artist.name + '</a>';
 		var context = player.context;
-		if( currGenre && currGenre != "punk" )
+		if( currGenre )
 			$("#now-playing").append("<a>OOh niiice! a " + currGenre + " horse!</a>");
 		else
 			$("#now-playing").append("<a>Doh! This is a flying big, not a horse!</a>");
-		var random = Math.floor(Math.random() * (facts.length - 0 + 1)) + 0;
-		$("#now-playing").append("<br>" + facts[random] + "<br>" + song + " by " + artist + " (" + currGenre +")");
+		var random = Math.floor(Math.random() * (facts.length));
+		$("#now-playing").append("<br>" + facts[random] + "<br>" + song + " by " + artist + " (" + ( currGenre ? currGenre : "pigs") +")");
 
 	}
 }
