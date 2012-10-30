@@ -1,6 +1,6 @@
 ## === Name of your Hack ===
 Horsify
-![horse](https://github.com/hugolm84/horsyfi/blob/master/horsify/img/main-horse.jpeg "Horsis")
+![horse](https://raw.github.com/hugolm84/horsyfi/master/horsify/img/main-horse.jpeg "Horsis")
 ## ===Short version desc ===
 Travel Iceland by horse based on now playing track. 
 
